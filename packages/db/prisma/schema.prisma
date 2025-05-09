@@ -7,3 +7,31 @@ datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
 }
+
+model User {
+    id String @id @default(cuid())
+
+    email      String    @unique
+    password   String
+    createdAt  DateTime  @default(now()) @map("created_at")
+    updatedAt  DateTime  @updatedAt @map("updated_at")
+    UserInfo   UserInfo? @relation(fields: [userInfoId], references: [id])
+    userInfoId String?   @map("user_info_id")
+}
+
+model UserInfo {
+    id String @id @default(cuid())
+
+    userId String @unique @map("user_id")
+
+    name      String
+    height    Int
+    weight    Int
+    objective String
+    age       Int
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+    User      User[]
+
+    @@map("user_info")
+}
